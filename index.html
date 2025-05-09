@@ -1,44 +1,83 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8" />
   <title>Building Damage Map</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
-    #map { height: 100vh; }
+    #map {
+      height: 100vh;
+    }
 
     .control-box {
       position: absolute;
       top: 10px;
       right: 10px;
       z-index: 1000;
-      font-size: 14px;
+      font-size: 24px;
     }
 
-    #filter, #summary {
+    #filter,
+    #summary {
       background: white;
-      padding: 10px;
-      border-radius: 8px;
-      box-shadow: 0 0 5px rgba(0,0,0,0.3);
-      margin-bottom: 10px;
+      padding: 14px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+      margin-bottom: 20px;
+      min-width: 280px;
     }
 
     #filter label {
       display: block;
-      margin-bottom: 4px;
+      margin-bottom: 14px;
+      font-size: 24px;
+      line-height: 28px;
+    }
+
+    #filter input[type="checkbox"] {
+      transform: scale(1.6);
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    #summary-content {
+      line-height: 1.8;
+    }
+
+    /* สีข้อความตามระดับความเสียหาย */
+    .damage-1 {
+      color: green;
+      font-weight: bold;
+    }
+
+    .damage-2 {
+      color: blue;
+      font-weight: bold;
+    }
+
+    .damage-3 {
+      color: orange;
+      font-weight: bold;
+    }
+
+    .damage-4 {
+      color: red;
+      font-weight: bold;
     }
   </style>
 </head>
+
 <body>
 
   <!-- กล่อง Filter + Summary -->
   <div class="control-box">
     <div id="filter">
-      <label><input type="checkbox" value="1" checked> ไม่เสียหาย</label>
-      <label><input type="checkbox" value="2" checked> เสียหายเล็กน้อย</label>
-      <label><input type="checkbox" value="3" checked> เสียหายปานกลาง</label>
-      <label><input type="checkbox" value="4" checked> เสียหายรุนแรง</label>
+      <label><input type="checkbox" value="1" checked> <span class="damage-1">ไม่เสียหาย</span></label>
+      <label><input type="checkbox" value="2" checked> <span class="damage-2">เสียหายเล็กน้อย</span></label>
+      <label><input type="checkbox" value="3" checked> <span class="damage-3">เสียหายปานกลาง</span></label>
+      <label><input type="checkbox" value="4" checked> <span class="damage-4">เสียหายรุนแรง</span></label>
     </div>
     <div id="summary">
       <b>สรุป:</b><br>
@@ -62,7 +101,7 @@
       return {
         1: 'green',
         2: 'blue',
-        3: 'orange',
+        3: 'darkorange',
         4: 'red'
       }[level] || 'gray';
     }
@@ -81,7 +120,7 @@
     Papa.parse("data.csv", {
       download: true,
       header: true,
-      complete: function(results) {
+      complete: function (results) {
         results.data.forEach(row => {
           const lat = parseFloat(row.lat);
           const lng = parseFloat(row.lng);
@@ -98,7 +137,9 @@
               fillOpacity: 0.8
             });
 
-            marker.bindPopup(`<b>${name}</b><br>${getDamageDescription(damage)}`);
+            marker.bindPopup(
+              `<b>${name}</b><br><span class="damage-${damage}">${getDamageDescription(damage)}</span>`
+            );
             marker.addTo(map);
 
             markers.push({ marker, damage });
@@ -132,10 +173,10 @@
       });
 
       const text = `
-        ไม่เสียหาย: ${count[1]}<br>
-        เสียหายเล็กน้อย: ${count[2]}<br>
-        เสียหายปานกลาง: ${count[3]}<br>
-        เสียหายรุนแรง: ${count[4]}
+        <span class="damage-1">ไม่เสียหาย: ${count[1]}</span><br>
+        <span class="damage-2">เสียหายเล็กน้อย: ${count[2]}</span><br>
+        <span class="damage-3">เสียหายปานกลาง: ${count[3]}</span><br>
+        <span class="damage-4">เสียหายรุนแรง: ${count[4]}</span>
       `;
       document.getElementById('summary-content').innerHTML = text;
     }
@@ -145,4 +186,5 @@
     });
   </script>
 </body>
+
 </html>
