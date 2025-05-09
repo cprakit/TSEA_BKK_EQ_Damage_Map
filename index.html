@@ -172,12 +172,15 @@
         count[item.damage]++;
       });
 
+      const total = count[1] + count[2] + count[3] + count[4];
+
       const text = `
-        <span class="damage-1">ไม่เสียหาย: ${count[1]}</span><br>
-        <span class="damage-2">เสียหายเล็กน้อย: ${count[2]}</span><br>
-        <span class="damage-3">เสียหายปานกลาง: ${count[3]}</span><br>
-        <span class="damage-4">เสียหายรุนแรง: ${count[4]}</span>
-      `;
+    <b>รวมทั้งหมด: ${total} อาคาร</b><br>
+    <span class="damage-1">ไม่เสียหาย: ${count[1]}</span><br>
+    <span class="damage-2">เสียหายเล็กน้อย: ${count[2]}</span><br>
+    <span class="damage-3">เสียหายปานกลาง: ${count[3]}</span><br>
+    <span class="damage-4">เสียหายรุนแรง: ${count[4]}</span>
+  `;
       document.getElementById('summary-content').innerHTML = text;
     }
 
